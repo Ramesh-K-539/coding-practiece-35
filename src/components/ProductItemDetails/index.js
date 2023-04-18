@@ -6,6 +6,7 @@ import {Component} from 'react'
 import Cookies from 'js-cookie'
 import {Link} from 'react-router-dom'
 import Loader from 'react-loader-spinner'
+import {BsPlusSquare, BsDashSquare} from 'react-icons/bs'
 
 import Header from '../Header'
 
@@ -20,7 +21,7 @@ class ProductItemDetails extends Component {
   state = {
     productItemDetailsList: [],
     similarProductsList: [],
-    quantityCount: 0,
+    quantityCount: 1,
     apiStatus: apiStatusConstants.initial,
   }
 
@@ -33,7 +34,6 @@ class ProductItemDetails extends Component {
     const {match} = this.props
     const {params} = match
     const {id} = params
-    console.log(id)
 
     const jwtToken = Cookies.get('jwt_token')
     const url = `https://apis.ccbp.in/products/${id}`
@@ -44,6 +44,7 @@ class ProductItemDetails extends Component {
       method: 'GET',
     }
     const response = await fetch(url, options)
+    console.log(response)
 
     if (response.ok === true) {
       const fetchedData = await response.json()
@@ -76,7 +77,7 @@ class ProductItemDetails extends Component {
         productItemDetailsList: updatedData,
         apiStatus: apiStatusConstants.success,
       })
-    } else if (response.status === 401) {
+    } else if (response.status === 404) {
       this.setState({
         apiStatus: apiStatusConstants.failure,
       })
@@ -90,7 +91,7 @@ class ProductItemDetails extends Component {
   onDecreaseCount = () => {
     const {quantityCount} = this.state
 
-    if (quantityCount > 0) {
+    if (quantityCount > 1) {
       this.setState(prevState => ({quantityCount: prevState.quantityCount - 1}))
     }
   }
@@ -138,10 +139,10 @@ class ProductItemDetails extends Component {
             </div>
             <p className="description">{description}</p>
             <p className="available">
-              Available: <span className="span-text">{available}</span>
+              Available: <p className="span-text">{available}</p>
             </p>
             <p className="available">
-              Brand: <span className="span-text">{brand}</span>
+              Brand: <p className="span-text">{brand}</p>
             </p>
             <hr className="hr-line" />
             <div className="quantity-container">
@@ -150,16 +151,18 @@ class ProductItemDetails extends Component {
                   type="button"
                   className="btn"
                   onClick={this.onDecreaseCount}
+                  data-testid="minus"
                 >
-                  -
+                  <BsDashSquare />
                 </button>
                 <p className="count">{quantityCount}</p>
                 <button
                   type="button"
                   className="btn"
                   onClick={this.onIncreaseCount}
+                  data-testid="plus"
                 >
-                  +
+                  <BsPlusSquare />
                 </button>
               </div>
               <button type="button" className="add-to-cart-btn">
@@ -172,10 +175,10 @@ class ProductItemDetails extends Component {
           <h1 className="similar-heading">Similar Products</h1>
           <ul className="similar-products-list">
             {similarProductsList.map(similarProduct => (
-              <li className="product-item" key={similarProduct.imageUrl}>
+              <li className="product-item" key={similarProduct.id}>
                 <img
                   src={similarProduct.imageUrl}
-                  alt="product"
+                  alt="similar product"
                   className="thumbnail"
                 />
                 <h1 className="title">{similarProduct.title}</h1>
@@ -207,7 +210,7 @@ class ProductItemDetails extends Component {
         className="failure-image"
       />
       <h1 className="failure-heading">Product Not Found</h1>
-      <Link to="/products">
+      <Link to="/products" className="link-item-failure-view">
         <button type="button" className="failure-btn">
           Continue Shopping
         </button>
@@ -236,7 +239,7 @@ class ProductItemDetails extends Component {
 
   render() {
     const {apiStatus} = this.state
-    console.log(apiStatus)
+
     return (
       <div className="bg-container">
         <Header />

@@ -116,17 +116,18 @@
   font-size: 24px;
   font-weight: 700;
   margin-top: 20px;
-  margin-right: 30px;
+  margin-right: 25px;
 }
 .btn {
   background-color: transparent;
   color: #1e293b;
   font-size: 15px;
   font-weight: 600;
-  margin-right: 30px;
+  margin-right: 25px;
   height: 20px;
   cursor: pointer;
   outline: none;
+  border: none;
 }
 
 .add-to-cart-btn {
@@ -271,4 +272,8 @@
 .loader {
   margin-top: 100px;
   align-self: center;
+}
+
+.link-item-failure-view {
+  text-decoration: none;
 }
